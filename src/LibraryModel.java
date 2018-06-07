@@ -20,8 +20,7 @@ public class LibraryModel {
                             "\nPlease check your input and try again";
     private String p16Spaces = "                ";
     private String divider = "\n==========================================================\n";
-    private Statement stmt;
-    private ResultSet rs;
+
 
 
 
@@ -30,7 +29,7 @@ public class LibraryModel {
 	try {
 	    //set up the connections,initialize the statement object
         conManager = DriverManager.getConnection(url,userid,password);
-        stmt = conManager.createStatement();
+
     }catch (java.sql.SQLException e) {e.printStackTrace();}
     }
 
@@ -40,6 +39,8 @@ public class LibraryModel {
         String banner = "Please check the  query result of book look up is below:\n";
         qResult.append(banner);
         try {
+            Statement stmt = conManager.createStatement();
+            ResultSet rs;
             rs = stmt.executeQuery("SELECT * FROM book WHERE isbn= "+isbn+";");
             //Get the info from books first
             if (rs.next()&& !rs.getString(1).equals("0")) {
@@ -75,6 +76,8 @@ public class LibraryModel {
         String banner = "Please check the information of all the books (Catalogue) below:\n";
         qResult.append(banner);
         try {
+            Statement stmt = conManager.createStatement();
+            ResultSet rs;
             rs = stmt.executeQuery("SELECT * FROM book ;");
             System.out.println(rs.next());
             if(rs.next()) {
@@ -101,6 +104,8 @@ public class LibraryModel {
         String banner = "Please check the information of loaned books below:\n";
         qResult.append(banner);
         try {
+            Statement stmt = conManager.createStatement();
+            ResultSet rs;
             rs = stmt.executeQuery("SELECT isbn,title,customerid,f_name,l_name,duedate"+
                                         " FROM (book natural join cust_book) natural join customer;");
             if(rs.next()) {
@@ -127,6 +132,8 @@ public class LibraryModel {
         String banner = "Please check the Author's information of your query below:\n";
         qResult.append(banner);
         try {
+            Statement stmt = conManager.createStatement();
+            ResultSet rs;
             rs = stmt.executeQuery("SELECT * FROM author WHERE authorid ="+authorID+";");
 
             if(rs.next()&& !rs.getString(1).equals("0")) {
@@ -147,6 +154,8 @@ public class LibraryModel {
         String banner = "Please check all the Author's information below:\n";
         qResult.append(banner);
         try {
+            Statement stmt = conManager.createStatement();
+            ResultSet rs;
             rs = stmt.executeQuery("SELECT * FROM author ;");
             if(rs.next()) {
                 do{
@@ -170,6 +179,8 @@ public class LibraryModel {
         String banner = "Please check the Customers' information of your query below:\n";
         qResult.append(banner);
         try {
+            Statement stmt = conManager.createStatement();
+            ResultSet rs;
             rs = stmt.executeQuery("SELECT * FROM customer WHERE customerid ="+customerID+";");
             if(rs.next() && !rs.getString(1).equals("0")) {
                 qResult.append("\nCustomer ID:  ").append(rs.getInt(1));
@@ -190,6 +201,8 @@ public class LibraryModel {
         String banner = "Please check all the Customers' information below:\n";
         qResult.append(banner);
         try {
+            Statement stmt = conManager.createStatement();
+            ResultSet rs;
             rs = stmt.executeQuery("SELECT * FROM customer ;");
             if(rs.next()){
                 do{
@@ -219,8 +232,6 @@ public class LibraryModel {
 
     public void closeDBConnection() {
         try{
-            rs.close();
-            stmt.close();
             conManager.close();
         }catch (java.sql.SQLException e){e.printStackTrace();}
     }
