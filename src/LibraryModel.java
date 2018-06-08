@@ -7,7 +7,11 @@
 
 
 import javax.swing.*;
+import javax.xml.transform.Result;
 import java.sql.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 public class LibraryModel {
 
@@ -17,11 +21,9 @@ public class LibraryModel {
     private final String url = "jdbc:postgresql://localhost:5432/300387709_jdbc";
     private Connection conManager;
     private String generalErrorMessage = "\nThere are no matching record according to the information you supplied." +
-                            "\nPlease check your input and try again";
+                                          "\nPlease check your input and try again";
     private String p16Spaces = "                ";
     private String divider = "\n==========================================================\n";
-
-
 
 
     public LibraryModel(JFrame parent, String userid, String password) {
@@ -30,7 +32,9 @@ public class LibraryModel {
 	    //set up the connections,initialize the statement object
         conManager = DriverManager.getConnection(url,userid,password);
 
-    }catch (java.sql.SQLException e) {e.printStackTrace();}
+    }catch (java.sql.SQLException e) {
+	    e.printStackTrace();
+	    }
     }
 
     public String bookLookup(int isbn) {
@@ -40,7 +44,7 @@ public class LibraryModel {
         qResult.append(banner);
         try {
             Statement stmt = conManager.createStatement();
-            ResultSet rs;
+            ResultSet rs=null;
             rs = stmt.executeQuery("SELECT * FROM book WHERE isbn= "+isbn+";");
             //Get the info from books first
             if (rs.next()&& !rs.getString(1).equals("0")) {
@@ -50,7 +54,7 @@ public class LibraryModel {
                 qResult.append("\nNumbers of copies: ").append(rs.getString(4));
                 qResult.append("\nNumber of copies left: ").append(rs.getString(5));
                 qResult.append("\nAuthors: ");
-                //Then retrieve the Author's infomation
+                //Then retrieve the Author's information
                 rs = stmt.executeQuery("SELECT name,surname,authorseqno" +
                                          " FROM book_author NATURAL JOIN author" +
                                          " WHERE isbn =" +isbn+
@@ -65,8 +69,11 @@ public class LibraryModel {
             else{
                 qResult.append(generalErrorMessage);
             }
-        }catch (SQLException e) {e.printStackTrace();}
-
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getErrorCode());
+        }
 	return qResult.toString();
     }
 
@@ -77,7 +84,7 @@ public class LibraryModel {
         qResult.append(banner);
         try {
             Statement stmt = conManager.createStatement();
-            ResultSet rs;
+            ResultSet rs =null;
             rs = stmt.executeQuery("SELECT * FROM book ;");
             System.out.println(rs.next());
             if(rs.next()) {
@@ -95,7 +102,11 @@ public class LibraryModel {
             else{
                 qResult.append(generalErrorMessage);
             }
-        }catch (SQLException e) {e.printStackTrace();}
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getErrorCode());
+        }
         return qResult.toString();
     }
 
@@ -105,7 +116,7 @@ public class LibraryModel {
         qResult.append(banner);
         try {
             Statement stmt = conManager.createStatement();
-            ResultSet rs;
+            ResultSet rs=null;
             rs = stmt.executeQuery("SELECT isbn,title,customerid,f_name,l_name,duedate"+
                                         " FROM (book natural join cust_book) natural join customer;");
             if(rs.next()) {
@@ -123,7 +134,11 @@ public class LibraryModel {
             else{
                 qResult.append(generalErrorMessage);
             }
-        }catch (SQLException e) {e.printStackTrace();}
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getErrorCode());
+        }
         return qResult.toString();
     }
 
@@ -133,7 +148,7 @@ public class LibraryModel {
         qResult.append(banner);
         try {
             Statement stmt = conManager.createStatement();
-            ResultSet rs;
+            ResultSet rs=null;
             rs = stmt.executeQuery("SELECT * FROM author WHERE authorid ="+authorID+";");
 
             if(rs.next()&& !rs.getString(1).equals("0")) {
@@ -145,7 +160,11 @@ public class LibraryModel {
                 qResult.append(generalErrorMessage);
             }
 
-        }catch (SQLException e) {e.printStackTrace();}
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getErrorCode());
+        }
         return qResult.toString();
     }
 
@@ -155,7 +174,7 @@ public class LibraryModel {
         qResult.append(banner);
         try {
             Statement stmt = conManager.createStatement();
-            ResultSet rs;
+            ResultSet rs=null;
             rs = stmt.executeQuery("SELECT * FROM author ;");
             if(rs.next()) {
                 do{
@@ -170,7 +189,11 @@ public class LibraryModel {
             else{
                 qResult.append(generalErrorMessage);
             }
-        }catch (SQLException e) {e.printStackTrace();}
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getErrorCode());
+        }
         return qResult.toString();
     }
 
@@ -180,7 +203,7 @@ public class LibraryModel {
         qResult.append(banner);
         try {
             Statement stmt = conManager.createStatement();
-            ResultSet rs;
+            ResultSet rs=null;
             rs = stmt.executeQuery("SELECT * FROM customer WHERE customerid ="+customerID+";");
             if(rs.next() && !rs.getString(1).equals("0")) {
                 qResult.append("\nCustomer ID:  ").append(rs.getInt(1));
@@ -192,7 +215,11 @@ public class LibraryModel {
                 qResult.append(generalErrorMessage);
             }
 
-        }catch (SQLException e) {e.printStackTrace();}
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getErrorCode());
+        }
         return qResult.toString();
     }
 
@@ -202,7 +229,7 @@ public class LibraryModel {
         qResult.append(banner);
         try {
             Statement stmt = conManager.createStatement();
-            ResultSet rs;
+            ResultSet rs=null;
             rs = stmt.executeQuery("SELECT * FROM customer ;");
             if(rs.next()){
                 do{
@@ -218,12 +245,144 @@ public class LibraryModel {
             else {
                 qResult.append(generalErrorMessage);
             }
-        }catch (SQLException e) {e.printStackTrace();}
+        }catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(e.getSQLState());
+            System.out.println(e.getErrorCode());
+        }
         return qResult.toString();
     }
 
     public String borrowBook(int isbn, int customerID, int day, int month, int year) {
-	return "Borrow Book Stub";
+        //to fix the error in given UI
+        int correctMonth = month+1;
+        Statement preCheckBook = null;
+        Statement preCheckCustomer=null;
+
+        ResultSet pChkBook =null;
+        ResultSet pChkCustomer=null;
+        Savepoint checkpoint=null;
+        Calendar today = Calendar.getInstance();
+        Calendar choseDate = Calendar.getInstance();
+        choseDate.set(year,correctMonth,day);
+        StringBuilder result = new StringBuilder();
+        String banner = "Performing the borrow of Book-ISBN "+isbn+" for Customer ";
+
+        String bookQuery = "SELECT * " +
+                            "FROM book " +
+                              "WHERE isbn="+isbn+";";
+
+        String customerQuery = "SELECT * " +
+                                 "FROM customer " +
+                                     "WHERE customerid ="+customerID+";";
+        try{
+            //shutdown auto commit for transaction
+            conManager.setAutoCommit(false);
+            //set transaction level to avoid Dirty Reads, Non-Repeatable Reads,and Phantom Reads
+            conManager.setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+            //generate roll back checkpoint for roll back
+            checkpoint = conManager.setSavepoint();
+            preCheckBook = conManager.createStatement();
+            preCheckCustomer = conManager.createStatement();
+
+            String bookErrorMsg = "\nNo book have ISBN equals to"+isbn+", please check your input.";
+            String customerErrorMsg="\nNo customer have customerID equals"+customerID+", please check your input.";
+
+            pChkBook = preCheckBook.executeQuery(bookQuery);
+            pChkCustomer= preCheckCustomer.executeQuery(customerQuery);
+
+            //check if given ISBN is valid
+            if (!pChkBook.next()){
+                 result.append(bookErrorMsg);
+                 return  result.toString();
+             }
+             else{
+                //check if it is the default book, default book shouldn't able to be borrowed
+                 if(pChkBook.getString(1).equals("0")){
+                     result.append(bookErrorMsg);
+                     return result.toString();
+                 }
+             }
+             //check if given customer id is valid
+            if (!pChkCustomer.next()){
+                result.append(customerErrorMsg);
+                return  result.toString();
+            }
+            else{
+                //check if it is default customer,default customer should't able to borrow
+                if(pChkCustomer.getString(1).equals("0")){
+                    result.append(customerErrorMsg);
+                    return result.toString();
+                }
+            }
+            //due date should ahead today to be valid
+            if(choseDate.before(today)){
+                result.append("Due date must ahead today,please verify your choice");
+                return result.toString();
+            }
+            //rectrive all the useful information of the seclected book and customer
+            String ISBN =pChkBook.getString("isbn");
+            int bookLeft = pChkBook.getInt("numleft");
+            String title = pChkBook.getString("title");
+            String cfname = pChkCustomer.getString("f_name");
+            String lname = pChkCustomer.getString("l_name");
+            int CID = pChkCustomer.getInt("customerid");
+            //check the left copies before updating
+            if(bookLeft < 1){
+                result.append("There is no left copy for ").append(title).append(" ISBN").append(isbn);
+                return result.toString();
+            }
+            //check if the customer has borrowed this book before(in hand),one customer is not allow to borrow duplicate copies of same book at a time
+            Statement ifborrowed = conManager.createStatement();
+            ResultSet ifBefore = ifborrowed.executeQuery("SELECT * FROM cust_book WHERE customerid ="+CID+" AND isbn= "+ISBN+";");
+            if(ifBefore.next()){
+                result.append("\nBorrow failed as you have already borrowed one copy of this book");
+                return result.toString();
+            }
+
+            String updateBooks = "UPDATE book set numleft = "+(bookLeft-1)+" WHERE isbn ="+isbn+";";
+            String dueDate =  year + "-" + correctMonth + "-" + day ;
+            String insertBorrow = "Insert into cust_book VALUES("+isbn+ ","+ "'" + year + "-" + correctMonth + "-" + day + "',"+CID+");";
+
+            Statement upBooks = conManager.createStatement();
+            Statement inBorrow = conManager.createStatement();
+            //final confimation
+            String confirmation = "Borrow summary:\nID: "+CID+"     First Name:"+cfname+" Last Name: "+lname+"\n"
+                                    +"Book Title: "+ title+" ISBN: "+ISBN+"\nDue Date: "+dueDate;
+            int choice = JOptionPane.YES_NO_OPTION;
+            int chosen = JOptionPane.showConfirmDialog(null,confirmation);
+            if(chosen!=JOptionPane.YES_OPTION){
+                result.append("Borrow canceled,Thanks for using");
+                return  result.toString();
+            }
+
+            //perform the transaction
+            upBooks.execute(updateBooks);
+            inBorrow.execute(insertBorrow);
+            conManager.commit();
+            //sucessfully borrowed , print out all the information
+            result.append("Successfully Borrowed, Please check the record below\n")
+                    .append("Customer Name: ").append(cfname).append(lname)
+                    .append("\nCustomerID: ").append(CID);
+            result.append("\nBook Title: ").append(title).append(" ISBN: ").append(ISBN);
+            result.append("\nDue Date: ").append(dueDate);
+
+        }catch (SQLException e){
+            e.printStackTrace();
+           if(conManager!=null){
+               try{
+                   conManager.rollback(checkpoint);
+               }catch (SQLException e1){e1.printStackTrace();}
+           }
+        }
+        finally {
+            try {
+                if(preCheckBook!=null) preCheckBook.close();
+                if(pChkCustomer!=null) pChkCustomer.close();
+                conManager.setAutoCommit(true);
+            }catch (SQLException e){e.printStackTrace();}
+        }
+	return result.toString();
     }
 
     public String returnBook(int isbn, int customerID) {
